@@ -33,10 +33,10 @@ public class LuceneWriteIndex {
         IndexWriter writer = createWriter();
         List<Document> documents = new ArrayList<>();
 
-        Document document1 = createDocument(1, "karkadan", "originalfann", "karkadance.com");
+        Document document1 = createDocument(1, "karkadan", "originalfann", 8741);
         documents.add(document1);
 
-        Document document2 = createDocument(2, "mamadou", "segpa", "segpa.com");
+        Document document2 = createDocument(2, "mamadou", "segpa", 6696);
         documents.add(document2);
 
         //clean everything first
@@ -47,12 +47,13 @@ public class LuceneWriteIndex {
         writer.close();
     }
 
-    private static Document createDocument(Integer id, String firstName, String lastName, String website) {
+    private static Document createDocument(Integer id, String firstName, String lastName, Integer reference) {
         Document document = new Document();
         document.add(new StringField("id", id.toString(), Field.Store.YES));
         document.add(new TextField("firstName", firstName, Field.Store.YES));
         document.add(new TextField("lastName", lastName, Field.Store.YES));
-        document.add(new TextField("website", website, Field.Store.YES));
+//        document.add(new TextField("website", website, Field.Store.YES));
+        document.add(new TextField("reference", reference.toString(), Field.Store.YES));
         return document;
     }
 
@@ -81,8 +82,9 @@ public class LuceneWriteIndex {
         };
 
         Map<String, Analyzer> perFieldAnalyzers = new HashMap<>();
-        perFieldAnalyzers.put("year", new KeywordAnalyzer());
+        perFieldAnalyzers.put("reference", new KeywordAnalyzer());
         Analyzer analyzer = new PerFieldAnalyzerWrapper(indexTimeAnalyzer, perFieldAnalyzers);
+//        Analyzer analyzer = new PerFieldAnalyzerWrapper(indexTimeAnalyzer);
         return analyzer;
 
     }

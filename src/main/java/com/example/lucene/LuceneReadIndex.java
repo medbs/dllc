@@ -24,9 +24,7 @@ public class LuceneReadIndex {
 
         //Search by ID
         TopDocs foundDocs = searchById(1, searcher);
-
-        System.out.println("Total Results :: " + foundDocs.totalHits);
-
+        System.out.println("Total Results Found : " + foundDocs.totalHits);
         for (ScoreDoc sd : foundDocs.scoreDocs) {
             Document d = searcher.doc(sd.doc);
             System.out.println(String.format(d.get("firstName")));
@@ -34,13 +32,21 @@ public class LuceneReadIndex {
 
         //Search by firstName
         TopDocs foundDocs2 = searchByFirstName("wahidel9arn", searcher);
-
-        System.out.println("Total Results :: " + foundDocs2.totalHits);
-
+        System.out.println("Total Results Found : " + foundDocs2.totalHits);
         for (ScoreDoc sd : foundDocs2.scoreDocs) {
             Document d = searcher.doc(sd.doc);
             System.out.println(String.format(d.get("id")));
         }
+
+
+        //Search by reference
+        TopDocs foundDocs3 = searchByReference(8741, searcher);
+        System.out.println("Total Results Found :" +foundDocs3.totalHits);
+        for (ScoreDoc sd: foundDocs3.scoreDocs) {
+            Document d = searcher.doc(sd.doc);
+            System.out.println(String.format(d.get("reference")));
+        }
+
     }
 
     private static IndexSearcher createSearcher() throws IOException {
@@ -65,5 +71,11 @@ public class LuceneReadIndex {
     }
 
 
+    private static TopDocs searchByReference(Integer ref, IndexSearcher searcher) throws Exception {
+        QueryParser qp = new QueryParser("reference" , new WhitespaceAnalyzer());
+        Query idQuery = qp.parse(ref.toString());
+        TopDocs hits = searcher.search(idQuery, 10);
+        return hits;
+    }
 
 }
